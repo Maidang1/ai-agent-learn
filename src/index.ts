@@ -1,6 +1,7 @@
 import ollama from 'ollama';
 import { getRAGContext } from './ragProvider';
 import readline from 'readline';
+import { handleConversation } from './embed';
 
 import { marked } from 'marked';
 import { markedTerminal } from 'marked-terminal';
@@ -148,14 +149,16 @@ async function generateEmbeddings(text: string) {
 
 async function run(model: string) {
   try {
-    const embeddings = await generateEmbeddings(getRAGContext())
     // Read user prompt from terminal
     // const userPrompt = await readUserInput("请输入用户提示: ");
     // Initialize messages for this iteration
-    console.log("embeddings", embeddings)
+
+    // 调用 handleConversation 函数并获取结果
+    const conversationResult = await handleConversation("面朝大海");
+
     const messages = [
-      { role: "system", content: `${JSON.stringify(embeddings.embedding)}`},
-      { role: "user", content: "摄影艺术歌词是啥" }
+      { role: "user", content: "摄影艺术歌词是啥" },
+      { role: "assistant", content: JSON.stringify(conversationResult) }
     ];
     console.log('Prompt:', messages[0].content);
 
