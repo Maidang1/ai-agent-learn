@@ -1,6 +1,11 @@
 import ollama from 'ollama';
 import { getRAGContext } from './ragProvider';
 
+import { marked } from 'marked';
+import { markedTerminal } from 'marked-terminal';
+
+
+marked.use(markedTerminal)
 // Add two numbers function
 function addTwoNumbers(args: { a: number, b: number }): number {
   return args.a + args.b;
@@ -120,9 +125,7 @@ async function run(model: string) {
       model: model,
       messages: messages
     });
-    console.log("response", response);
-    console.log("finalResponse", finalResponse);
-    console.log('Final response:', finalResponse.message.content);
+    console.log('Final response:', marked(finalResponse.message.content));
   } else {
     console.log('No tool calls returned from model');
   }
