@@ -14,7 +14,12 @@
     "tsx": "^4.19.3"
   },
   "dependencies": {
+    "@langchain/community": "^0.3.31",
+    "@langchain/core": "^0.3.40",
+    "@langchain/ollama": "^0.2.0",
     "@types/node": "^22.13.4",
+    "chromadb": "^1.10.4",
+    "chromadb-default-embed": "^2.13.2",
     "marked": "^15.0.7",
     "marked-terminal": "^7.3.0",
     "ollama": "^0.5.13"
