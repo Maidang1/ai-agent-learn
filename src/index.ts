@@ -1,4 +1,5 @@
 import ollama from 'ollama';
+import { getRAGContext } from './ragProvider';
 
 // Add two numbers function
 function addTwoNumbers(args: { a: number, b: number }): number {
@@ -9,6 +10,12 @@ function addTwoNumbers(args: { a: number, b: number }): number {
 function subtractTwoNumbers(args: { a: number, b: number }): number {
   return args.a - args.b;
 }
+
+function getLyric(args: { author: string, name: string }) {
+  return getRAGContext()
+}
+
+
 
 // Tool definition for add function
 const addTwoNumbersTool = {
@@ -44,19 +51,46 @@ const subtractTwoNumbersTool = {
   }
 };
 
+
+const getLyricTool = {
+  type: 'function',
+  function: {
+    name: 'getLyric',
+    description: '获取歌词',
+    parameters: {
+      type: 'object',
+      required: ['author', 'name'],
+      properties: {
+        author: { type: 'string', description: 'The author name' },
+        name: { type: 'string', description: 'The song name' }
+      }
+    }
+  }
+};
+
+
 async function run(model: string) {
-  const messages = [{ role: 'user', content: 'What is three minus one?' }];
+  // Retrieve context from index.txt for RAG
+  // const ragContext = await getRAGContext();
+  // Add RAG context as a system message for the model to use
+  const messages = [
+    // { role: 'system', content: ragContext },
+    // { role: 'user', content: 'What is three minus one?' },
+    { role: "user", content: "根据许嵩的摄影艺术歌词生成创意性的句子" }
+  ];
+  // console.log('RAG Context:', ragContext);
   console.log('Prompt:', messages[0].content);
 
   const availableFunctions = {
     addTwoNumbers: addTwoNumbers,
-    subtractTwoNumbers: subtractTwoNumbers
+    subtractTwoNumbers: subtractTwoNumbers,
+    getLyric: getLyric
   };
 
   const response = await ollama.chat({
     model: model,
     messages: messages,
-    tools: [addTwoNumbersTool, subtractTwoNumbersTool]
+    tools: [addTwoNumbersTool, subtractTwoNumbersTool, getLyricTool]
   });
 
   let output: number;
